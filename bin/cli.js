@@ -78,7 +78,7 @@ function installProject() {
     const gitCheckoutCommand = `git clone --depth 1 https://github.com/Kyoudan/windpieces-backend-starter.git ${repoName}`;
     let installDeps;
 
-    /*     switch (packageManager) {
+    switch (packageManager) {
         case "yarn":
             installDeps = `cd ${repoName} && yarn`;
             break;
@@ -88,7 +88,7 @@ function installProject() {
         default:
             installDeps = `cd ${repoName} && npm install`;
             break;
-    } */
+    }
 
     console.log(chalk.green("Creating new project..."));
     console.clear();
@@ -101,9 +101,9 @@ function installProject() {
         let installPrisma;
 
         if (packageManager == "yarn" || packageManager == "pnpm") {
-            installPrisma = `cd ${repoName} && ${packageManager} add prisma @prisma/client -D --ignore-workspace-root-check`;
+            installPrisma = `cd ${repoName} && ${packageManager} add prisma @prisma/client -D`;
         } else {
-            installPrisma = `cd ${repoName} && npm install prisma @prisma/client --save-dev --ignore-workspace-root-check`;
+            installPrisma = `cd ${repoName} && npm install prisma @prisma/client --save-dev`;
         }
 
         const prismaDependencies = runCommand(installPrisma);
