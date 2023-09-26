@@ -355,13 +355,7 @@ function installProject() {
 }
 
 async function finalMessage() {
-  const message = await figlet("READY!!", function (err, data) {
-    if (err) {
-      console.log("Something went wrong...");
-      console.dir(err);
-    }
-    return data;
-  });
+  figlet("READY!!");
   console.log("-".repeat(50) + "\n");
   console.log(message);
   console.log("Your project is ready!");
