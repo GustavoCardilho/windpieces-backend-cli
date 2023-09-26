@@ -343,6 +343,10 @@ function installProject() {
   console.clear();
   console.log("Done!");
 
+  finalMessage();
+}
+
+async function finalMessage() {
   let initCommand;
 
   if (packageManager == "yarn" || packageManager == "pnpm") {
@@ -351,13 +355,8 @@ function installProject() {
     initCommand = `cd ${repoName} && npm run dev`;
   }
 
-  finalMessage();
-}
-
-async function finalMessage() {
   figlet("READY!!");
   console.log("-".repeat(50) + "\n");
-  console.log(message);
   console.log("Your project is ready!");
   console.log(`use ${initCommand}`);
   console.log(
