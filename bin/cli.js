@@ -214,6 +214,35 @@ PORT= 3000
   );
 }
 
+function installPrismaInProject() {
+  if (!isInstallPrisma) return;
+  let installPrisma;
+
+  if (packageManager == "yarn" || packageManager == "pnpm") {
+    installPrisma = `cd ${repoName} && ${packageManager} add prisma @prisma/client -D`;
+  } else {
+    installPrisma = `cd ${repoName} && npm install prisma @prisma/client --save-dev`;
+  }
+
+  const prismaDependencies = runCommand(installPrisma);
+  if (!prismaDependencies) process.exit(1);
+
+  const prismaInstalled = runCommand(
+    `cd ${repoName} && npx prisma init --datasource-provider ${databaseWithPrisma}`
+  );
+  if (!prismaInstalled) process.exit(1);
+
+  fs.mkdirSync(`./${repoName}/src/database`);
+  fs.writeFileSync(
+    `./${repoName}/src/database/prismaClient.ts`,
+    `
+import { Prisma, PrismaClient } from "@prisma/client";
+const prismaClient: PrismaClient = new PrismaClient();
+export default prismaClient;
+`
+  );
+}
+
 function installServerFileInProject() {
   if (isInstallMongo) {
     fs.writeFileSync(
@@ -319,23 +348,7 @@ function installProject() {
   installMongoInProject();
   installEnvorimentInProject();
   installServerFileInProject();
-  if (isInstallPrisma) {
-    let installPrisma;
-
-    if (packageManager == "yarn" || packageManager == "pnpm") {
-      installPrisma = `cd ${repoName} && ${packageManager} add prisma @prisma/client -D`;
-    } else {
-      installPrisma = `cd ${repoName} && npm install prisma @prisma/client --save-dev`;
-    }
-
-    const prismaDependencies = runCommand(installPrisma);
-    if (!prismaDependencies) process.exit(1);
-
-    const prismaInstalled = runCommand(
-      `cd ${repoName} && npx prisma init --datasource-provider ${databaseWithPrisma}`
-    );
-    if (!prismaInstalled) process.exit(1);
-  }
+  installPrismaInProject();
 
   console.clear();
   console.log(chalk.green("Organizing files..."));

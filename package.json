@@ -1,6 +1,6 @@
 {
     "name": "windpieces-backend-starter",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "a",
     "private": false,
     "main": "index.js",
