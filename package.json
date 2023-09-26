@@ -1,6 +1,6 @@
 {
-    "name": "windpieces-backend-starter",
-    "version": "0.0.1",
+    "name": "testandow",
+    "version": "0.0.2",
     "description": "a",
     "private": false,
     "main": "index.js",
@@ -21,6 +21,8 @@
     "homepage": "https://github.com/Kyoudan/windpieces-backend-starter#readme",
     "dependencies": {
         "chalk": "^5.3.0",
-        "inquirer": "^9.2.11"
+        "figlet": "^1.6.0",
+        "inquirer": "^9.2.11",
+        "rimraf": "^5.0.4"
     }
 }
