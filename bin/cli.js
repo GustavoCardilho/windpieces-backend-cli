@@ -5,7 +5,7 @@ import inquirer from "inquirer";
 import { execSync } from "child_process";
 import fs from "fs";
 import { rimraf } from "rimraf";
-import figlet from 'figlet'
+import figlet from "figlet";
 
 const runCommand = (command) => {
   try {
@@ -148,6 +148,24 @@ networks:
 
 function installMongoInProject() {
   if (!isInstallMongo) return;
+
+  let installMongoose;
+
+  switch (packageManager) {
+    case "yarn":
+      installMongoose = `cd ${repoName} && yarn add mongoose`;
+      break;
+    case "pnpm":
+      installMongoose = `cd ${repoName} && pnpm install mongoose`;
+      break;
+    default:
+      installMongoose = `cd ${repoName} && npm install mongoose`;
+      break;
+  }
+
+  const mongooseDependencies = runCommand(installMongoose);
+  if (!mongooseDependencies) process.exit(1);
+
   fs.mkdirSync(`./${repoName}/database`);
   fs.mkdirSync(`./${repoName}/models`);
 
@@ -310,19 +328,17 @@ function installProject() {
         "package.json"
       )} file to check all available scripts \n`
     );
-  
+
     console.log(
       `supoort me on github: ${chalk.green(
         "https://github.com/Kyoudan/windpieces-backend-cli"
       )}\n\n`
     );
-  
+
     console.log("Happy coding! 💖\n");
-  
+
     console.log("-".repeat(50));
   });
-
- 
 }
 
 async function setup() {
