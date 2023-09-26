@@ -23,6 +23,7 @@ let databaseWithPrisma = "";
 let packageManager = "";
 let isInstallDocker = false;
 let isInstallMongo = false;
+let isOpenVSCode = false;
 
 async function DefineRepoName() {
   const res = await inquirer.prompt([
@@ -38,6 +39,20 @@ async function DefineRepoName() {
   if (!res.repoName) {
     console.error(chalk.red("Please specify the project directory:"));
     process.exit(1);
+  }
+}
+
+async function OpenVSCodeQuestion() {
+  const res = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "vscode",
+      message: "Would you like to open VSCode?",
+      default: false,
+    },
+  ]);
+  if (res.vscode) {
+    isOpenVSCode = true;
   }
 }
 
@@ -239,6 +254,11 @@ console.log("-".repeat(80) + "\\n");
   );
 }
 
+function OpenVSCode() {
+  if (!isOpenVSCode) return;
+  runCommand(`cd ${repoName} && code .`);
+}
+
 function removeGitFolder() {
   try {
     fs.readdir(repoName, (err, files) => {
@@ -254,6 +274,20 @@ function removeGitFolder() {
     console.error(
       chalk.red("Error ao apagar a pasta .git... Esse processo é opcional")
     );
+  }
+}
+
+function applyPrettier() {
+  switch (packageManager) {
+    case "yarn":
+      runCommand(`cd ${repoName} && yarn prettier:fix`);
+      break;
+    case "pnpm":
+      runCommand(`cd ${repoName} && pnpm prettier:fix`);
+      break;
+    default:
+      runCommand(`cd ${repoName} && npm run prettier:fix`);
+      break;
   }
 }
 
@@ -280,6 +314,7 @@ function installProject() {
   if (!checkedOut) process.exit(1);
 
   console.log(chalk.green("Installing dependencies..."));
+  removeGitFolder();
   installDockerInProject();
   installMongoInProject();
   installEnvorimentInProject();
@@ -301,7 +336,10 @@ function installProject() {
     );
     if (!prismaInstalled) process.exit(1);
   }
-  removeGitFolder();
+
+  console.clear();
+  console.log(chalk.green("Organizing files..."));
+  applyPrettier();
   console.clear();
   console.log("Done!");
 
@@ -312,32 +350,37 @@ function installProject() {
   } else {
     initCommand = `cd ${repoName} && npm run dev`;
   }
-  console.log("-".repeat(50) + "\n");
 
-  figlet("READY!!", function (err, data) {
+  finalMessage();
+}
+
+async function finalMessage() {
+  const message = await figlet("READY!!", function (err, data) {
     if (err) {
       console.log("Something went wrong...");
       console.dir(err);
-      return;
     }
-    console.log(chalk.green(data));
-    console.log("Your project is ready!");
-    console.log(`use ${initCommand}`);
-    console.log(
-      `consult the ${chalk.green(
-        "package.json"
-      )} file to check all available scripts \n`
-    );
-
-    console.log(
-      `supoort me on github: ${chalk.green(
-        "https://github.com/Kyoudan/windpieces-backend-cli"
-      )}\n\n`
-    );
-    console.log("Happy coding! 💖\n");
-
-    console.log("-".repeat(50));
+    return data;
   });
+  console.log("-".repeat(50) + "\n");
+  console.log(message);
+  console.log("Your project is ready!");
+  console.log(`use ${initCommand}`);
+  console.log(
+    `consult the ${chalk.green(
+      "package.json"
+    )} file to check all available scripts \n`
+  );
+
+  console.log(
+    `supoort me on github: ${chalk.green(
+      "https://github.com/Kyoudan/windpieces-backend-cli"
+    )}\n\n`
+  );
+  console.log("Happy coding! 💖\n");
+
+  console.log("-".repeat(50));
+  OpenVSCode();
 }
 
 async function setup() {
@@ -347,6 +390,7 @@ async function setup() {
   await addMongoDB();
   await addDocker();
   await DefinePackageManager();
+  await OpenVSCodeQuestion();
   installProject();
 }
 
