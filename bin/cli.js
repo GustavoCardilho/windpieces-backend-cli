@@ -355,25 +355,32 @@ async function finalMessage() {
     initCommand = `cd ${repoName} && npm run dev`;
   }
 
-  figlet("READY!!");
-  console.log("-".repeat(50) + "\n");
-  console.log("Your project is ready!");
-  console.log(`use ${initCommand}`);
-  console.log(
-    `consult the ${chalk.green(
-      "package.json"
-    )} file to check all available scripts \n`
-  );
+  figlet("READY!!", function (err, data) {
+    if (err) {
+      console.log("Something went wrong...");
+      console.dir(err);
+      return;
+    }
+    console.log("-".repeat(50) + "\n");
+    console.log(chalk.green(data));
+    console.log("Your project is ready!");
+    console.log(`use ${initCommand}`);
+    console.log(
+      `consult the ${chalk.green(
+        "package.json"
+      )} file to check all available scripts \n`
+    );
 
-  console.log(
-    `supoort me on github: ${chalk.green(
-      "https://github.com/Kyoudan/windpieces-backend-cli"
-    )}\n\n`
-  );
-  console.log("Happy coding! 💖\n");
+    console.log(
+      `supoort me on github: ${chalk.green(
+        "https://github.com/Kyoudan/windpieces-backend-cli"
+      )}\n\n`
+    );
+    console.log("Happy coding! 💖\n");
 
-  console.log("-".repeat(50));
-  OpenVSCode();
+    console.log("-".repeat(50));
+    OpenVSCode();
+  });
 }
 
 async function setup() {
