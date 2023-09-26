@@ -166,11 +166,11 @@ function installMongoInProject() {
   const mongooseDependencies = runCommand(installMongoose);
   if (!mongooseDependencies) process.exit(1);
 
-  fs.mkdirSync(`./${repoName}/database`);
-  fs.mkdirSync(`./${repoName}/models`);
+  fs.mkdirSync(`./${repoName}/src/database`);
+  fs.mkdirSync(`./${repoName}/src/models`);
 
   fs.writeFileSync(
-    `./${repoName}/database/connection_mongodb.ts`,
+    `./${repoName}/src/database/connection_mongodb.ts`,
     `
 import mongoose from 'mongoose'
 
@@ -334,7 +334,6 @@ function installProject() {
         "https://github.com/Kyoudan/windpieces-backend-cli"
       )}\n\n`
     );
-
     console.log("Happy coding! 💖\n");
 
     console.log("-".repeat(50));
