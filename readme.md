@@ -29,18 +29,22 @@ npx windpieces-backend-starter
 
 ### All questions
 
-> - [x] What is the name of your project?: (Default: my-app)
-> - [x] Would you like to add Prisma to your project? (Default: No)
-> - [x] What database would you like to use? (Default: Postgres) | (Options: Postgres, MySQL, SQLite, MongoDB) (With: Prisma)
-> - [x] Would you like to add MongoDB to your project? (Mongoose): (Default: No)
-> - [x] Would you like to add Docker to your project? (Default: No)
-> - [x] What package manager do you use? (Default: npm) | (Options: npm, yarn, pnpm)
-> - [x] Would you like to open VSCode? (Default: No)
+<ul>
+    <li>What is the name of your project?: (Default: my-app)</li>
+    <li>Would you like to add Prisma to your project? (Default: No)</li>
+    <li>What database would you like to use? (Default: Postgres) | (Options: Postgres, MySQL, SQLite, MongoDB) (With: Prisma)</li>
+    <li>Would you like to add MongoDB to your project? (Mongoose): (Default: No)</li>
+    <li>Would you like to add Docker to your project? (Default: No)</li>
+    <li>What package manager do you use? (Default: npm) | (Options: npm, yarn, pnpm)</li>
+    <li>Would you like to open VSCode? (Default: No)</li>
+</ul>
 
 ### Conditions
 
-> - [x] If you added prism, it is not possible to add Mongoose
-> - [x] It is only possible to add relational databases (MySQL, SQLite, Postgres) with Prisma
+<ul>
+    <li>If you added prism, it is not possible to add Mongoose</li>
+    <li>It is only possible to add relational databases (MySQL, SQLite, Postgres) with Prisma</li>
+</ul>
 
 #
 
