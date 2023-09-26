@@ -1,6 +1,6 @@
 {
-    "name": "testandow",
-    "version": "0.0.2",
+    "name": "windpieces-backend-starter",
+    "version": "0.0.3",
     "description": "a",
     "private": false,
     "main": "index.js",
