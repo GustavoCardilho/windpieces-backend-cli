@@ -281,17 +281,17 @@ export { app };
             case "yarn":
                 installMoreLibraries = `cd ${
                     this.repoName
-                } && yarn add ${this.packageManager.join(" ")}`;
+                } && yarn add ${this.moreLibraries.join(" ")}`;
                 break;
             case "pnpm":
                 installMoreLibraries = `cd ${
                     this.repoName
-                } && pnpm install ${this.packageManager.join(" ")}`;
+                } && pnpm install ${this.moreLibraries.join(" ")}`;
                 break;
             default:
                 installMoreLibraries = `cd ${
                     this.repoName
-                } && npm install ${this.packageManager.join(" ")}`;
+                } && npm install ${this.moreLibraries.join(" ")}`;
                 break;
         }
 
