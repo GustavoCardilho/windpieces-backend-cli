@@ -81,17 +81,17 @@ class Actions {
     switch (this.packageManager) {
       case "yarn":
         this.runCommand(`
-        npx husky add .husky/pre-commit "yarn lint-staged"
+        cd ${this.repoName} && npx husky add .husky/pre-commit "yarn lint-staged"
       `);
         break;
       case "pnpm":
         this.runCommand(`
-        npx husky add .husky/pre-commit "pnpm lint-staged"
+        cd ${this.repoName} && npx husky add .husky/pre-commit "pnpm lint-staged"
       `);
         break;
       default:
         this.runCommand(`
-        npx husky add .husky/pre-commit "npm run lint-staged"
+        cd ${this.repoName} && npx husky add .husky/pre-commit "npm run lint-staged"
       `);
         break;
     }

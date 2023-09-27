@@ -4,7 +4,7 @@
 
 #
 
-### windpieces CLI foi feito para fins de estudos. Ele serve para automatizar a criação de projetos
+### Windpieces CLI was made for study purposes. It serves to automate the creation of projects
 
 #### WARNING: The windpieces-cli is currently in the development phase
 
@@ -37,6 +37,11 @@ npx windpieces-backend-starter
     <li>Would you like to add Docker to your project? (Default: No)</li>
     <li>What package manager do you use? (Default: npm) | (Options: npm, yarn, pnpm)</li>
     <li>Would you like to open VSCode? (Default: No)</li>
+    <li>Would you like to add Husky to your project? (Default: No)</li>
+    <li>Would you like to add more librarys? (Default: No)</li>
+    <li>What librarys would you like to add? (Default: None) | (Options: jsonwebtoken, bcrypt, zod, uuid, date-fns)</li>
+    <li>Would you like to add CORS to your project? (Default: No)</li>
+    <li>What links would you like to add? (separate links by space) (Default: None)</li>
 </ul>
 
 ### Conditions
@@ -44,6 +49,7 @@ npx windpieces-backend-starter
 <ul>
     <li>If you added prism, it is not possible to add Mongoose</li>
     <li>It is only possible to add relational databases (MySQL, SQLite, Postgres) with Prisma</li>
+    
 </ul>
 
 #

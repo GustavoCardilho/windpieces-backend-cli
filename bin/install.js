@@ -129,7 +129,7 @@ class Install {
       `
 import mongoose from "mongoose";
 
-#this is a example of model
+// this is a example of model
 
 const ExampleSchema = new mongoose.Schema({
   name: {
