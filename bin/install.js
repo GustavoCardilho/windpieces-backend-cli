@@ -12,6 +12,9 @@ class Install {
     isInstallDocker,
     isInstallPrisma,
     databaseWithPrisma,
+    isApplyHusky,
+    moreLibraries,
+    corsLink,
     actionClass
   ) {
     this.repoName = repoName;
@@ -19,6 +22,9 @@ class Install {
     this.isInstallDocker = isInstallDocker;
     this.isInstallMongo = isInstallMongo;
     this.isInstallPrisma = isInstallPrisma;
+    this.isHusky = isApplyHusky;
+    this.moreLibraries = moreLibraries;
+    this.corsLink = corsLink;
     this.databaseWithPrisma = databaseWithPrisma;
     this.actionsClass = actionClass;
     this.runCommand = (command) => {
@@ -30,7 +36,8 @@ class Install {
       }
       return true;
     };
-
+    this.envContent;
+    this.appContent;
   }
 
   installDockerInProject() {
@@ -116,16 +123,69 @@ class Install {
       
       `
     );
+
+    fs.writeFileSync(
+      `./${this.repoName}/src/models/example.ts`,
+      `
+import mongoose from "mongoose";
+
+#this is a example of model
+
+const ExampleSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  tag: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  office: {
+    type: String,
+    enum: ["owner", "tenant", "union"],
+    required: true,
+  },
+  vehicle: [
+    {
+      type: {
+        type: String,
+        enum: ["car", "motorcycle"],
+      },
+      plate: String,
+      brand: String,
+    },
+  ],
+  hasAnimal: {
+    type: Boolean,
+    default: false,
+  },
+  visitors: [
+    {
+      type: Object,
+      required: true,
+      name: String,
+      cpf: String,
+      cep: String,
+    },
+  ],
+});
+
+export default mongoose.model<typeof ExampleSchema>(
+  "example",
+  ExampleSchema,
+);
+
+      `
+    );
   }
 
   installEnvorimentInProject() {
-    fs.writeFileSync(
-      `./${this.repoName}/.env`,
-      `
-      DATABASE_URL= ""
-      PORT= 3000
-              `
-    );
+    this.envContent = `
+  DATABASE_URL= ""
+  PORT= 3000
+  #CORS_CONFIG\n
+    `;
   }
 
   installPrismaInProject() {
@@ -197,8 +257,95 @@ class Install {
     );
   }
 
+  installAppFileInProject() {
+    this.appContent = `
+import express from "express";
+import morgan from "morgan";
+import routes from "./routes";
+
+const app = express();
+
+app.use(express.json(), express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
+app.use(routes);
+/*CORSCONFIG*/
+
+export { app };
+`;
+  }
+
+  installMoreLibrariesInProject() {
+    if (!this.moreLibraries) return;
+    this.moreLibraries.forEach((library) => {
+      let installMoreLibraries;
+      switch (this.packageManager) {
+        case "yarn":
+          installMoreLibraries = `cd ${this.repoName} && yarn add ${library}`;
+          break;
+        case "pnpm":
+          installMoreLibraries = `cd ${this.repoName} && pnpm install ${library}`;
+          break;
+        default:
+          installMoreLibraries = `cd ${this.repoName} && npm install ${library}`;
+          break;
+      }
+
+      const moreLibrariesDependencies = this.runCommand(installMoreLibraries);
+      if (!moreLibrariesDependencies) process.exit(1);
+    });
+  }
+
+  installCorsInProject() {
+    if (!this.corsLink) return;
+    let installCors;
+
+    switch (this.packageManager) {
+      case "yarn":
+        installCors = `cd ${this.repoName} && yarn add cors`;
+        break;
+      case "pnpm":
+        installCors = `cd ${this.repoName} && pnpm install cors`;
+        break;
+      default:
+        installCors = `cd ${this.repoName} && npm install cors`;
+        break;
+    }
+    this.appContent = this.appContent.replace(
+      "/*CORSCONFIG*/",
+      `const corsOptions = process.env.CORS_ORIGIN.split(",") || "*";
+  
+      app.use(
+        cors({
+          origin: corsOptions,
+          optionsSuccessStatus: 200,
+        })
+      );`
+    );
+
+    this.envContent = this.envContent.replace(
+      "#CORS_CONFIG",
+      `CORS_ORIGIN=${this.corsLink.split(" ").join(",")}`
+    );
+
+    const corsDependencies = this.runCommand(installCors);
+    if (!corsDependencies) process.exit(1);
+  }
+
+  createFiles() {
+    fs.writeFileSync(`./${this.repoName}/.env`, this.envContent);
+    fs.writeFileSync(`./${this.repoName}/src/app.ts`, this.appContent);
+  }
+
   StartInstallProject() {
     const gitCheckoutCommand = `git clone --depth 1 https://github.com/Kyoudan/windpieces-backend-starter.git ${this.repoName}`;
+
+    console.log(chalk.green("Creating new project..."));
+
+    console.clear();
+    const checkedOut = this.runCommand(gitCheckoutCommand);
+    if (!checkedOut) process.exit(1);
+    this.actionsClass.removeGitFolder();
+    console.log(chalk.green("Installing dependencies..."));
     let installDeps;
 
     switch (this.packageManager) {
@@ -213,27 +360,25 @@ class Install {
         break;
     }
 
-    console.log(chalk.green("Creating new project..."));
-
-    console.clear();
-    const checkedOut = this.runCommand(gitCheckoutCommand);
-    if (!checkedOut) process.exit(1);
-
-    console.log(chalk.green("Installing dependencies..."));
-    this.actionsClass.removeGitFolder();
+    const installCheck = this.runCommand(installDeps);
+    if (!installCheck) process.exit(1);
+    this.installAppFileInProject()
     this.installDockerInProject();
     this.installMongoInProject();
     this.installEnvorimentInProject();
     this.installServerFileInProject();
     this.installPrismaInProject();
+    this.installMoreLibrariesInProject();
+    this.installCorsInProject();
+    this.createFiles()
 
     console.clear();
     console.log(chalk.green("Organizing files..."));
-    applyPrettier();
+    this.actionsClass.applyPrettier();
     console.clear();
     console.log("Done!");
 
-    finalMessage();
+    this.actionsClass.finalMessage();
   }
 }
 

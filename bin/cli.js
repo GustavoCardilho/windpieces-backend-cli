@@ -5,7 +5,6 @@ import Install from "./install.js";
 import Actions from "./actions.js";
 
 class Setup {
-
   async start() {
     console.clear();
     const QuestionsInstance = new Questions();
@@ -13,6 +12,9 @@ class Setup {
     const isPrisma = await QuestionsInstance.addPrisma();
     const isMongoDB = await QuestionsInstance.addMongoDB();
     const isDocker = await QuestionsInstance.addDocker();
+    const isHusky = await QuestionsInstance.addHusky();
+    const corsLink = await QuestionsInstance.addCors();
+    const moreLibraries = await QuestionsInstance.addMoreLibraries();
     const packageManager = await QuestionsInstance.DefinePackageManager();
     const isOpenVSCode = await QuestionsInstance.OpenVSCodeQuestion();
     const ActionsInstance = new Actions(repoName, packageManager, isOpenVSCode);
@@ -23,6 +25,9 @@ class Setup {
       isDocker,
       isPrisma.isPrisma,
       isPrisma.database,
+      isHusky,
+      moreLibraries,
+      corsLink,
       ActionsInstance
     );
     InstallInstance.StartInstallProject();

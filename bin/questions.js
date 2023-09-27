@@ -3,6 +3,10 @@ import chalk from "chalk";
 import inquirer from "inquirer";
 
 class Questions {
+  constructor() {
+    this.isInstallPrisma = false;
+  }
+
   async DefineRepoName() {
     const res = await inquirer.prompt([
       {
@@ -57,6 +61,8 @@ class Questions {
         },
       ]);
 
+      this.isInstallPrisma = true;
+
       return {
         isPrisma: res.prisma ? true : false,
         database: res.database.toLowerCase(),
@@ -82,7 +88,7 @@ class Questions {
   }
 
   async addMongoDB() {
-    if (isInstallPrisma) return;
+    if (this.isInstallPrisma) return;
     const res = await inquirer.prompt([
       {
         type: "confirm",
@@ -92,6 +98,65 @@ class Questions {
       },
     ]);
     return res.mongo;
+  }
+
+  async addHusky() {
+    const res = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "husky",
+        message: "Would you like to add Husky to your project?",
+        default: false,
+      },
+    ]);
+    return res.husky;
+  }
+
+  async addMoreLibraries() {
+    const res = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "moreLibrarys",
+        message: "Would you like to add more librarys?",
+        default: false,
+      },
+    ]);
+
+    if (res.moreLibrarys) {
+      const res = await inquirer.prompt([
+        {
+          type: "checkbox",
+          name: "librarys",
+          message: "What librarys would you like to add?",
+          choices: ["jsonwebtoken", "bcrypt", "zod", "uuid", "date-fns"],
+        },
+      ]);
+      return res.librarys;
+    }
+    return undefined;
+  }
+
+  async addCors() {
+    const res = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "cors",
+        message: "Would you like to add CORS to your project?",
+        default: false,
+      },
+    ]);
+    if (res.cors) {
+      const links = await inquirer.prompt([
+        {
+          type: "input",
+          name: "links",
+          message:
+            "What links would you like to add? (separate links by space)",
+          default: "",
+        },
+      ]);
+      return links.links;
+    }
   }
 
   async DefinePackageManager() {

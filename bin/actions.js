@@ -59,6 +59,46 @@ class Actions {
     }
   }
 
+  applyHusky() {
+    if (!this.isHusky) return;
+
+    let commandHusky;
+
+    switch (this.packageManager) {
+      case "yarn":
+        commandHusky = `cd ${this.repoName} && yarn prepare`;
+        break;
+      case "pnpm":
+        commandHusky = `cd ${this.repoName} && pnpm prepare`;
+        break;
+      default:
+        commandHusky = `cd ${this.repoName} && npm run prepare`;
+        break;
+    }
+
+    console.log("Husky installed")
+
+    switch (this.packageManager) {
+      case "yarn":
+        this.runCommand(`
+        npx husky add .husky/pre-commit "yarn lint-staged"
+      `);
+        break;
+      case "pnpm":
+        this.runCommand(`
+        npx husky add .husky/pre-commit "pnpm lint-staged"
+      `);
+        break;
+      default:
+        this.runCommand(`
+        npx husky add .husky/pre-commit "npm run lint-staged"
+      `);
+        break;
+    }
+
+    this.runCommand(commandHusky);
+  }
+
   async finalMessage() {
     let initCommand;
 
